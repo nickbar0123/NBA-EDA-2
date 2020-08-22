@@ -10,7 +10,7 @@ def load_data(path):
     data = pd.read_csv(path)
     return data 
 
-global df
+xtitle = 'Season'
 df = load_data('Merged.csv')
 
 first_season = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'])]['PTS'].mean()
@@ -38,36 +38,35 @@ second_season_rb = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'] + 1)][
 third_season_rb = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'] + 2)]['TRB%'].mean()
 fourth_season_rb = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'] + 3)]['TRB%'].mean()
 
+#Setting style 
 st.markdown(
     '''
-    <body>
     <head>
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
     <style>
     h1 {
-        color: #FF8C00;
-        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #C9082A;
+        font-family: "Alata", sans-serif;
         font-size: 300%;
         text-align: center;
-        border: 1px solid red;
+        border: 1px solid #C9082A;
         font-weight: bold}
     h2 {
-        color: #FF8C00;
-        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #C9082A;
+        font-family: "Alata", sans-serif;
         font-size: 200%;
         text-align: left;
-        border-bottom: 1px solid red
+        border-bottom: 1px solid #C9082A;
         font-weight: bold;
     }
     p {
-        color: #FF8C00;
-        font-family: "Comic Sans MS", cursive, sans-serif;
-        font-size: 100%;
+        color: #C9082A;
+        font-family: "Alata", sans-serif;
+        font-size: 150%;
     }
     </style>
     </head>
-    </body>''', unsafe_allow_html = True
-)
-
+    ''', unsafe_allow_html = True) 
 
 
 
@@ -77,47 +76,56 @@ st.markdown(
 image = Image.open('C:\Project_4\Kobe.jpeg')
 st.image(image,use_column_width=True, caption = 'RIP Kobe')
 
-
-st.dataframe(data = df)
+st.markdown(
+    '''<p> For many aspiring NBA players, the college experience is integral to their future pursuits. 
+    This report will analyze how different collegiate divisions impact players on the NBA landscape.</p>''', unsafe_allow_html = True
+)
 
 '---'
 st.markdown(
     '<h2>Analyzing Hall of Fame Players</h2>', unsafe_allow_html = True
 )
 
+
+
 seasons = ['First', 'Second', 'Third', 'Fourth']
 options = st.selectbox(
-    'Choose your stats',
+    'Choose your stat',
     ('Average Points Scored', 'Average Block Rate', 'Average Assist Rate',
     'Average Steal Rate', 'Average Rebound Rate')
 )
 
-fig = go.Figure()
+fig, ax = plt.subplots()
 
 if options == 'Average Points Scored':
     points = [first_season, second_season, third_season, fourth_season]
-    fig.add_trace(go.Bar(x = seasons, y = points))
-    st.plotly_chart(fig)
+    ax.bar(seasons, points, color = '#17408B')
+    ax.set(xlabel = xtitle, ylabel = 'Average Points Scored')
+    st.pyplot()
 
 if options == 'Average Block Rate':
     blocks = [first_season_blk, second_season_blk, third_season_blk, fourth_season_blk]
-    fig.add_trace(go.Bar(x = seasons, y = blocks))
-    st.plotly_chart(fig)
+    ax.bar(seasons, blocks, color = '#17408B')
+    ax.set(xlabel = xtitle, ylabel = 'Average Block Rate')
+    st.pyplot()
 
 if options == 'Average Assist Rate':
     ast = [first_season_ast, second_season_ast, third_season_ast, fourth_season_ast]
-    fig.add_trace(go.Bar(x = seasons, y = ast))
-    st.plotly_chart(fig)
+    ax.bar(seasons, ast, color = '#17408B')
+    ax.set(xlabel = xtitle, ylabel = 'Average Assist Rate')
+    st.pyplot()
 
 if options == 'Average Steal Rate':
     stl = [first_season_stl, second_season_stl, third_season_stl, fourth_season_stl]
-    fig.add_trace(go.Bar(x = seasons, y = stl))
-    st.plotly_chart(fig)
+    ax.bar(seasons, stl, color = '#17408B')
+    ax.set(xlabel = xtitle, ylabel = 'Average Assist Rate')
+    st.pyplot()
 
 if options == 'Average Rebound Rate':
     rb = [first_season_rb, second_season_rb, third_season_rb, fourth_season_rb]
-    fig.add_trace(go.Bar(x = seasons, y = rb))
-    st.plotly_chart(fig)
+    ax.bar(seasons, rb, color = '#17408B')
+    ax.set(xlabel = xtitle, ylabel = 'Average Assist Rate')
+    st.pyplot()
 '---'
 st.markdown(
     '<h2>Distribution of Hall of Fame Players</h2>', unsafe_allow_html= True)
@@ -125,28 +133,18 @@ st.markdown(
 distribution = df[df['fame'] == 1]['division'].value_counts()
 label = ['Division 1','Non-division 1']
 fig, ax = plt.subplots(figsize = (5,5))
-ax.pie(distribution, labels = label, autopct = '%1.2f%%', radius = 0.8)
+ax.pie(distribution, labels = label, autopct = '%1.2f%%', radius = 0.8, colors = ('#17408B', '#C9082A'))
 ax.set_title('Overview of Hall of Fame Players', size = 12)
 ax.legend(loc = 'upper right')
 st.pyplot(use_container_width=True)
-
-st.markdown(
-    '<h2>Distribution within Divisions', unsafe_allow_html = True
-)
-
-division = df['division'].value_counts().tolist()
-fig, ax = plt.subplots(figsize = (5,5))
-ax.pie(division, labels = label, autopct = '%1.2f%%', radius = 0.8)
-ax.set_title('Overview of NBA players')
-ax.legend(loc = 'upper right')
-st.pyplot(use_container_width = True)
 
 '---'
 st.markdown(
     '<h2>Analyzing Divisions</h2>', unsafe_allow_html = True
 )
+
 options = st.selectbox(
-    'Choose your non-division 1 stats',
+    'Choose your non-division 1 stat',
     ('Average Points Scored', 'Average Block Rate', 'Average Assist Rate',
     'Average Steal Rate', 'Average Rebound Rate')
 )
@@ -158,8 +156,9 @@ if options == 'Average Points Scored':
     third = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['PTS'].mean()
     fourth = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['PTS'].mean()
     points = [first,second,third,fourth]
-    ax.bar(seasons, points)
-    ax.plot(threshold)
+    ax.bar(seasons, points, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Points Scored')
     st.pyplot()
 
 if options == 'Average Block Rate':
@@ -169,8 +168,9 @@ if options == 'Average Block Rate':
     third = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['BLK%'].mean()
     fourth = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['BLK%'].mean()
     points = [first,second,third,fourth]
-    ax.bar(seasons, points)
-    ax.plot(threshold)
+    ax.bar(seasons, points, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Block Rate')
     st.pyplot()
 
 if options == 'Average Assist Rate':
@@ -180,8 +180,9 @@ if options == 'Average Assist Rate':
     third = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['AST%'].mean()
     fourth = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['AST%'].mean()
     assist = [first, second, third, fourth]
-    ax.bar(seasons, assist)
-    ax.plot(threshold)
+    ax.bar(seasons, assist, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Assist Rate')
     st.pyplot()
 
 if options == 'Average Steal Rate':
@@ -191,8 +192,9 @@ if options == 'Average Steal Rate':
     third = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['STL%'].mean()
     fourth = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['STL%'].mean()
     stl = [first, second, third, fourth]
-    ax.bar(seasons, stl)
-    ax.plot(threshold)
+    ax.bar(seasons, stl, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Steal Rate')
     st.pyplot()
 
 if options == 'Average Rebound Rate':
@@ -202,12 +204,13 @@ if options == 'Average Rebound Rate':
     third = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['TRB%'].mean()
     fourth = df[(df['division'] == 0) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['TRB%'].mean()
     trb = [first, second, third, fourth]
-    ax.bar(seasons, trb)
-    ax.plot(threshold)
+    ax.bar(seasons, trb, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Rebound Rate')
     st.pyplot()
 
 
-options = st.selectbox('Choose your division 1 stats',
+options = st.selectbox('Choose your division 1 stat',
             ('Average Points Scored', 'Average Block Rate',
             'Average Assist Rate', 'Average Steal Rate',
             'Average Rebound Rate'))
@@ -220,8 +223,9 @@ if options == 'Average Points Scored':
     third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['PTS'].mean()
     fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['PTS'].mean()
     points = [first,second,third,fourth]
-    ax.bar(seasons, points)
-    ax.plot(threshold)
+    ax.bar(seasons, points, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Points Scored')
     st.pyplot()
 
 if options == 'Average Block Rate':
@@ -231,8 +235,9 @@ if options == 'Average Block Rate':
     third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['BLK%'].mean()
     fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['BLK%'].mean()
     points = [first,second,third,fourth]
-    ax.bar(seasons, points)
-    ax.plot(threshold)
+    ax.bar(seasons, points, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Block Rate')
     st.pyplot()
 
 if options == 'Average Assist Rate':
@@ -242,8 +247,9 @@ if options == 'Average Assist Rate':
     third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['AST%'].mean()
     fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['AST%'].mean()
     assist = [first, second, third, fourth]
-    ax.bar(seasons, assist)
-    ax.plot(threshold)
+    ax.bar(seasons, assist, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Assist Rate')
     st.pyplot()
 
 if options == 'Average Steal Rate':
@@ -253,19 +259,9 @@ if options == 'Average Steal Rate':
     third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['STL%'].mean()
     fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['STL%'].mean()
     stl = [first, second, third, fourth]
-    ax.bar(seasons, stl)
-    ax.plot(threshold)
-    st.pyplot()
-
-if options == 'Average Steal Rate':
-    threshold = [first_season_stl, second_season_stl, third_season_stl, fourth_season_stl]
-    first = df[(df['division'] == 1) & (df['YEAR'] == df['year_start']) & (df['fame'] == 1)]['STL%'].mean()
-    second = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 1) & (df['fame'] == 1)]['STL%'].mean()
-    third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['STL%'].mean()
-    fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['STL%'].mean()
-    stl = [first, second, third, fourth]
-    ax.bar(seasons, stl)
-    ax.plot(threshold)
+    ax.bar(seasons, stl, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Steal Rate')
     st.pyplot()
 
 if options == 'Average Rebound Rate':
@@ -275,6 +271,61 @@ if options == 'Average Rebound Rate':
     third = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 2) & (df['fame'] == 1)]['TRB%'].mean()
     fourth = df[(df['division'] == 1) & (df['YEAR'] == df['year_start'] + 3) & (df['fame'] == 1)]['TRB%'].mean()
     trb = [first, second, third, fourth]
-    ax.bar(seasons, trb)
-    ax.plot(threshold)
+    ax.bar(seasons, trb, color = '#17408B')
+    ax.plot(threshold, color = '#C9082A')
+    ax.set(xlabel = xtitle, ylabel = 'Average Rebound Rate')
     st.pyplot()
+
+'---'
+st.markdown(
+    '<h2>Which division 1 college should you attend?</h2>', unsafe_allow_html = True
+)
+
+
+colleges = df[df['division'] == 1].groupby('college')['name'].count().sort_values(ascending = False).head(5).index.tolist()
+
+options = st.selectbox('Choose College', options = (['Top 5'] + colleges))
+graph = pd.crosstab(df[(df['YEAR'] > 2000)]['YEAR'], df[df['college'].isin(colleges)]['college'])
+fig = go.Figure()
+
+figure, ax = plt.subplots()
+if options == 'Top 5':
+    ax.plot(graph, marker = '.')
+    ax.legend(colleges, fontsize = 6)
+    ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+    st.pyplot()
+else:
+    for college in colleges:
+        if college == options and college != 'All':
+            ax.plot(graph[college], marker = '.')
+            ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+            st.pyplot()
+
+st.markdown(
+    '<h2>Which non-division 1 college should you choose?', unsafe_allow_html = True
+)
+
+colleges = df[df['division'] == 0].groupby('college')['name'].count().sort_values(ascending = False).head(5).index.tolist()
+options = st.selectbox('Choose College', options = (['Top 5'] + colleges))
+graph = pd.crosstab(df[(df['YEAR'] > 2000)]['YEAR'], df[df['college'].isin(colleges)]['college'])
+fig = go.Figure()
+
+figure, ax = plt.subplots()
+if options == 'Top 5':
+    ax.plot(graph, marker = '.')
+    ax.legend(colleges, loc = 'upper left', fontsize = 6)
+    ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+    st.pyplot()
+else:
+    for college in colleges:
+        if college == options and college != 'All':
+            ax.plot(graph[college], marker = '.')
+            ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+            st.pyplot()
+
+  
+
+
+
+
+
