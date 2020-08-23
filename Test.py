@@ -11,7 +11,7 @@ def load_data(path):
     return data 
 
 xtitle = 'Season'
-df = load_data('Merged.csv')
+df = load_data('Fixed Merged.csv')
 
 first_season = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'])]['PTS'].mean()
 second_season = df[(df['fame'] == 1) & (df['YEAR'] == df['year_start'] + 1)]['PTS'].mean()
@@ -302,26 +302,63 @@ else:
             st.pyplot()
 
 st.markdown(
-    '<h2>Which non-division 1 college should you choose?', unsafe_allow_html = True
+    '<h2>Which college should you attend?', unsafe_allow_html = True
 )
 
-colleges = df[df['division'] == 0].groupby('college')['name'].count().sort_values(ascending = False).head(5).index.tolist()
-options = st.selectbox('Choose College', options = (['Top 5'] + colleges))
-graph = pd.crosstab(df[(df['YEAR'] > 2000)]['YEAR'], df[df['college'].isin(colleges)]['college'])
-fig = go.Figure()
+colleges = df[(df['division'] == 1) | (df['college'].str.contains('Unknown'))].groupby('college')['name'].count().sort_values(ascending = False).head(5).index.tolist()
+fame = df[(df['college'].isin(colleges)) & (df['fame'] == 1)].groupby('college')['name'].count().sort_values(ascending = False).head(5).tolist()
+total = df[(df['division'] == 1) | (df['college'].str.contains('Unknown'))].groupby('college')['name'].count().sort_values(ascending = False).head(5).tolist()
 
-figure, ax = plt.subplots()
-if options == 'Top 5':
-    ax.plot(graph, marker = '.')
-    ax.legend(colleges, loc = 'upper left', fontsize = 6)
-    ax.set(xlabel = 'Year', ylabel = 'Number of Players')
-    st.pyplot()
-else:
-    for college in colleges:
-        if college == options and college != 'All':
-            ax.plot(graph[college], marker = '.')
-            ax.set(xlabel = 'Year', ylabel = 'Number of Players')
-            st.pyplot()
+fig, ax = plt.subplots()
+
+ax.bar(colleges, total, color = '#17408B')
+ax.bar(colleges, fame, color = '#C9082A')
+fig.legend(['Division 1', 'Hall of Fame Players'], loc=1)
+fig.autofmt_xdate(rotation='vertical')
+st.pyplot()
+
+# uni = df.groupby('college').count().sort_values(by = 'name', ascending = False).reset_index().head(31)
+# def get_division(name):
+
+#     division = df[df['college'].isin([name])]['division'].unique()[0]
+
+
+
+# def get_fame_player(college):
+#     n_fames = df[(df['college'] == college) & df['fame'] == 1].groupby('college').count()['name'].max()
+#     return n_fames
+
+# fig, ax = plt.subplots( figsize=(10, 8))
+
+# colors = ['orange'  if  get_division(x) == 0 else 'blue' for x in uni['college']]
+# fames = [get_fame_player(x) for x in uni['college']]
+
+# ax.bar(uni['college'], uni['name'], color=colors)
+# ax.bar(uni['college'], fames, color ='red')
+
+# fig.legend(['Non-division 1', 'Hall of Fame Players', 'Division 1'], loc=1)
+
+# fig.autofmt_xdate(rotation='vertical')
+# st.pyplot()
+
+
+# colleges = df[df['division'] == 0].groupby('college')['name'].count().sort_values(ascending = False).head(5).index.tolist()
+# options = st.selectbox('Choose College', options = (['Top 5'] + colleges))
+# graph = pd.crosstab(df[(df['YEAR'] > 2000)]['YEAR'], df[df['college'].isin(colleges)]['college'])
+# fig = go.Figure()
+
+# figure, ax = plt.subplots()
+# if options == 'Top 5':
+#     ax.plot(graph, marker = '.')
+#     ax.legend(colleges, loc = 'upper left', fontsize = 6)
+#     ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+#     st.pyplot()
+# else:
+#     for college in colleges:
+#         if college == options and college != 'All':
+#             ax.plot(graph[college], marker = '.')
+#             ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+#             st.pyplot()
 
   
 
