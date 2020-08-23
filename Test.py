@@ -286,9 +286,8 @@ colleges = df[df['division'] == 1].groupby('college')['name'].count().sort_value
 
 options = st.selectbox('Choose College', options = (['Top 5'] + colleges))
 graph = pd.crosstab(df[(df['YEAR'] > 2000)]['YEAR'], df[df['college'].isin(colleges)]['college'])
-fig = go.Figure()
 
-figure, ax = plt.subplots()
+fig, ax = plt.subplots()
 if options == 'Top 5':
     ax.plot(graph, marker = '.')
     ax.legend(colleges, fontsize = 6)
@@ -299,6 +298,7 @@ else:
         if college == options and college != 'All':
             ax.plot(graph[college], marker = '.')
             ax.set(xlabel = 'Year', ylabel = 'Number of Players')
+            fig.legend([college], loc = 1)
             st.pyplot()
 
 st.markdown(
