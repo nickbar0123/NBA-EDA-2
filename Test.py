@@ -315,7 +315,7 @@ ax.bar(colleges, total, color = '#17408B', width = 0.5)
 ax.bar(colleges, fame, color = '#C9082A', width = 0.5)
 ax.set(xlabel = 'College', ylabel = 'Number of Players')
 fig.legend(['Division 1', 'Hall of Fame Players'], loc=1)
-fig.autofmt_xdate(rotation='vertical')
+fig.autofmt_xdate(rotation= 30)
 st.pyplot()
 
 # uni = df.groupby('college').count().sort_values(by = 'name', ascending = False).reset_index().head(31)
